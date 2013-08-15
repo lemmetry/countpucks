@@ -1,5 +1,5 @@
 from django.contrib import admin
-from webservice.models import Team, HockeyPlayer, PlayerScores, GoalieScores
+from countpucks.webservice.models import Team, HockeyPlayer, PlayerScores, GoalieScores
 
 
 admin.site.register(Team)

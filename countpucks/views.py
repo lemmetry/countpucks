@@ -1,14 +1,11 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from webservice.models import HockeyPlayer, Team
 from django.views.decorators.csrf import csrf_exempt
+from countpucks.webservice.models import HockeyPlayer, Team
 import json
 
 
 def homepage(request):
-    # HockeyPlayer.objects.all().delete()
-    # Team.objects.all().delete()
-
     teams = Team.objects.all()
     players = HockeyPlayer.objects.all()
 
@@ -37,7 +34,7 @@ def api(request):
                        'sweater': sweater,
                        'position': position,
                        'team': team}
-        json_player = toJSON(player_dict)
+        # json_player = toJSON(player_dict)
 
         try:
             team_name = Team.objects.get(team_name=team)
@@ -45,10 +42,17 @@ def api(request):
             team_name = Team.objects.create(team_name=team)
 
         try:
-            player = HockeyPlayer.objects.get(full_name=full_name, team=team_name)
+            HockeyPlayer.objects.get(full_name=full_name, team=team_name)
         except HockeyPlayer.DoesNotExist:
             player = HockeyPlayer(full_name=full_name, sweater=sweater, position=position)
             player.team = team_name
             player.save()
 
-        return HttpResponse(json_player, content_type='application/json')
+        return HttpResponse()
+
+
+# temporary func for testing/cleaning purposes
+def deleteEverything(request):
+    HockeyPlayer.objects.all().delete()
+    Team.objects.all().delete()
+    return HttpResponse()

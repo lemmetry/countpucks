@@ -11,12 +11,12 @@ class Team(models.Model):
 
 class HockeyPlayer(models.Model):
     full_name = models.CharField(max_length=100)
-    sweater = models.IntegerField(max_length=2)
+    sweater = models.CharField(max_length=3)
     position = models.CharField(max_length=50)
     team = models.ForeignKey(Team)
 
     def __unicode__(self):
-        return '%s %s' % (self.full_name, self.sweater, self.position, self.team)
+        return '%s %s %s %s' % (self.full_name, self.sweater, self.position, self.team)
 
 
 class PlayerScores(models.Model):
