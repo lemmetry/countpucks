@@ -6,7 +6,10 @@
 <body>
     <h2>Players:</h2>
     {% for player in players %}
-        <br>{{ player.full_name }} - {{ player.sweater }} - {{ player.position }}
+        <br>{{ player.full_name }} - {{ player.sweater }} - {{ player.position }} -
+		{% for record in player.playerscores_set.all %}
+			{{ record.date }}
+		{% endfor %}
     {% endfor %}
 
     <h2>Teams:</h2>
