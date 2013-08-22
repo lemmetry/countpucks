@@ -215,10 +215,8 @@ class PlayerTask():
                                'GAA': GAA,
                                'SO': SO,
                                'Min': Min}
-            client = Client(service_address, api_secret)
             # TODO *IDEA*: implement addGoalie() and post Players and Goalies to api/Player and api/Goalie respectively.
             # TODO *PURPOSE*: to eliminate some of if-else in countpucks/views.py
-            client.addPlayer(player_dict)
         else:
             # player does NOT have SPLITS-page
             # create player
@@ -229,5 +227,5 @@ class PlayerTask():
                            'Team': team,
                            'Position': position,
                            'Birthdate': birthdate}
-            client = Client(service_address, api_secret)
-            client.addPlayer(player_dict)
+        client = Client(service_address, api_secret)
+        client.addPlayer(player_dict)
