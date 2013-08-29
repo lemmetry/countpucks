@@ -70,8 +70,6 @@ def api(request):
 
         player_scores = PlayerScores(GP=GP, G=G, A=A, P=P, PlusMinus=PlusMinus, PIM=PIM, PP=PP, SH=SH,
                                      GWG=GWG, S=S, hits=Hits, BkS=BkS, GvA=GvA, TkA=TkA, TOIg=TOIg)
-        player_scores.player = player
-        player_scores.save()
     else:
         # season = request.POST.get('Season')
         GP = request.POST.get('GP')
@@ -89,9 +87,8 @@ def api(request):
 
         player_scores = GoalieScores(GP=GP, GS=GS, W=W, L=L, OT=OT, GA=GA, SA=SA, Sv=Sv, SvPercentage=SvPercentage,
                                      GAA=GAA, SO=SO, MIN=Min)
-        player_scores.player = player
-        player_scores.save()
-
+    player_scores.player = player
+    player_scores.save()
     return HttpResponse()
 
 
