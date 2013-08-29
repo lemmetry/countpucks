@@ -83,6 +83,50 @@ class PlayerTask():
     def __init__(self, url):
         self.url = url
 
+    def getFullName(self, soup):
+        node = soup.find('div', {'style': 'width: 335px;'})
+        if node is not None:
+            node = node.next
+        else:
+            node = soup.find('h1', {'style': 'width:550px;'}).next
+        full_name = str(node).strip()
+        return full_name
+
+    def getSweater(self, soup):
+        node = soup.find('span', {'class': 'sweater'})
+        if node is not None:
+            node = node.next
+            sweater = str(node)
+        else:
+            sweater = 'NO_NUMBER'
+        return sweater
+
+    def getTeam(self, soup):
+        node = soup.find('div', {'style': 'float: left; margin-left: 6px; font-weight: bold; color: #999;'})
+        if node is not None:
+            node = node.next.next
+            team = str(node)
+        else:
+            team = 'NO_TEAM'
+        return team
+
+    def getPosition(self, soup):
+        node = soup.find('span', {'style': 'color: #666;'})
+        if node.string is not None:
+            node = node.next
+            position = str(node)
+        else:
+            position = 'NO_POSITION'
+        return position
+
+    def getBirthdate(self, soup):
+        node = soup.find('table', {'class': 'bioInfo'}).next
+        birthdate_td_tag = node.contents[-1]
+        birthdate_raw_string = birthdate_td_tag.string
+        birthdate_raw_list = birthdate_raw_string.split('\n')
+        birthdate = birthdate_raw_list[1]
+        return birthdate
+
     def processTask(self, context):
         nhl_url = self.url
         try:
@@ -93,92 +137,45 @@ class PlayerTask():
 
         soup = BeautifulSoup(link)
 
-        node = soup.find('div', {'style': 'width: 335px;'})
-        if node is not None:
-            node = node.next
-        else:
-            node = soup.find('h1', {'style': 'width:550px;'}).next
-        full_name = str(node).strip()
-
-        node = soup.find('span', {'class': 'sweater'})
-        if node is not None:
-            node = node.next
-            sweater = str(node)
-        else:
-            sweater = 'NO_NUMBER'
-
-        node = soup.find('div', {'style': 'float: left; margin-left: 6px; font-weight: bold; color: #999;'})
-        if node is not None:
-            node = node.next.next
-            team = str(node)
-        else:
-            team = 'NO_TEAM'
-            
-        node = soup.find('span', {'style': 'color: #666;'}).next
-        position = str(node)
+        full_name = self.getFullName(soup)
+        sweater = self.getSweater(soup)
+        team = self.getTeam(soup)
+        position = self.getPosition(soup)
 
         # / TODO find the better way to determine if the current player belongs to any team
         if position == team:
             team = 'NO_TEAM'
 
-        node = soup.find('table', {'class': 'bioInfo'}).next
-        birthdate_td_tag = node.contents[-1]
-        birthdate_raw_string = birthdate_td_tag.string
-        birthdate_raw_list = birthdate_raw_string.split('\n')
-        birthdate = birthdate_raw_list[1]
+        birthdate = self.getBirthdate(soup)
 
         print('%s - %s - %s - %s - %s' % (full_name, sweater, team, position, birthdate))
 
         node = soup.find('ul', {'class': 'ui-tabs-nav'})
         node = str(node)
 
-        if 'view=splits' in node:
+        stat_names = ['Records available', 'NHL Url', 'Full name', 'Sweater', 'Team', 'Position', 'Birthdate']
+
+        player_has_stat_page = 'view=splits' in node
+        if player_has_stat_page:
             url = self.url + '&view=splits'
             try:
                 link = urllib.request.urlopen(url).read()
             except urllib.error.HTTPError as err:
-                # print('ERROR HERE:', self.url)
                 return
-            
+
             soup = BeautifulSoup(link)
-            
+            node = soup.find('tr', {'class': 'statsRowStyle'})
+
+            stat_values = [True, nhl_url, full_name, sweater, team, position, birthdate]
             if position != 'Goalie':
-                node = soup.find('tr', {'class': 'statsRowStyle'})
-                stat_values = []
+                stat_names.extend(['Season', 'GP', 'G', 'A', 'P', 'PlusMinus', 'PIM', 'PP', 'SH', 'GWG', 'S', 'Hits',
+                                   'BkS', 'GvA', 'TkA', 'TOIg'])
+
                 for _ in range(16):
                     node = node.next.next
                     stat_values.append(node.strip())
-                (season, GP, G, A, P, PlusMinus, PIM, PP, SH, GWG, S, Hits,
-                 BkS, GvA, TkA, TOIg) = stat_values
-                # return [Player.Player(full_name, sweater, team, position,
-                #                       season, GP, G, A, P, PlusMinus, PIM, PP,
-                #                       SH, GWG, S, Hits, BkS, GvA, TkA, TOIg)]
-                player_dict = {'Records available': True,
-                               'NHL Url': nhl_url,
-                               'Full name': full_name,
-                               'Sweater': sweater,
-                               'Team': team,
-                               'Position': position,
-                               'Birthdate': birthdate,
-                               'Season': season,
-                               'GP': GP,
-                               'G': G,
-                               'A': A,
-                               'P': P,
-                               'PlusMinus': PlusMinus,
-                               'PIM': PIM,
-                               'PP': PP,
-                               'SH': SH,
-                               'GWG': GWG,
-                               'S': S,
-                               'Hits': Hits,
-                               'BkS': BkS,
-                               'GvA': GvA,
-                               'TkA': TkA,
-                               'TOIg': TOIg}
             else:
-                node = soup.find('tr', {'class': 'statsRowStyle'})
-                stat_values = []
+                stat_names.extend(['Season', 'GP', 'GS', 'W', 'L', 'OT', 'GA', 'SA', 'Sv', 'SvPercentage', 'GAA', 'SO', 'Min'])
                 for _ in range(7):
                     node = node.next.next
                     stat_values.append(node.strip())
@@ -189,43 +186,8 @@ class PlayerTask():
                 stat_values.append(node)
                 node = node.next.next.next
                 stat_values.append(node)
-
-                (season, GP, GS, W, L, OT, GA, SA, Sv, SvPercentage, GAA, SO,
-                 Min) = stat_values
-                # return [Goalie.Goalie(full_name, sweater, team, position,
-                #                       season, GP, GS, W, L, OT, GA, SA, Sv,
-                #                       SvPercentage, GAA, SO, Min)]
-                player_dict = {'Records available': True,
-                               'NHL Url': nhl_url,
-                               'Full name': full_name,
-                               'Sweater': sweater,
-                               'Team': team,
-                               'Position': position,
-                               'Birthdate': birthdate,
-                               'Season': season,
-                               'GP': GP,
-                               'GS': GS,
-                               'W': W,
-                               'L': L,
-                               'OT': OT,
-                               'GA': GA,
-                               'SA': SA,
-                               'Sv': Sv,
-                               'SvPercentage': SvPercentage,
-                               'GAA': GAA,
-                               'SO': SO,
-                               'Min': Min}
-            # TODO *IDEA*: implement addGoalie() and post Players and Goalies to api/Player and api/Goalie respectively.
-            # TODO *PURPOSE*: to eliminate some of if-else in countpucks/views.py
         else:
-            # player does NOT have SPLITS-page
-            # create player
-            player_dict = {'Records available': False,
-                           'NHL Url': nhl_url,
-                           'Full name': full_name,
-                           'Sweater': sweater,
-                           'Team': team,
-                           'Position': position,
-                           'Birthdate': birthdate}
+            stat_values = [False, nhl_url, full_name, sweater, team, position, birthdate]
+        player_dict = dict(zip(stat_names, stat_values))
         client = Client(service_address, api_secret)
         client.addPlayer(player_dict)
