@@ -8,6 +8,9 @@ class Team(models.Model):
     def __unicode__(self):
         return self.team_name
 
+    class Meta:
+        ordering = ('team_name',)
+
 
 class HockeyPlayer(models.Model):
     nhl_url = models.URLField(verbose_name='NHL Url', max_length=100)
@@ -42,6 +45,7 @@ class PlayerScores(models.Model):
 
     class Meta:
         verbose_name_plural = 'Player scores'
+        ordering = ('player',)
 
     def __unicode__(self):
         return '%s %s %s' % (self.player.full_name, self.player.sweater, self.player.team)
