@@ -5,7 +5,7 @@ from countpucks.webservice.models import HockeyPlayer, Team, PlayerScores, Goali
 import json
 
 
-def homepage(request):
+def data_from_db(request):
     teams = Team.objects.all().exclude(team_name='NO_TEAM')
     players = HockeyPlayer.objects.all()
 
@@ -14,79 +14,49 @@ def homepage(request):
     return render(request, 'base.html', context)
 
 
-def toJSON(dictionary):
-    return json.dumps(dictionary, indent=2)
+def homepage(request):
+    return render(request, 'homepage.html')
 
 
 @csrf_exempt
 def api(request):
     api_secret = '5e30d905-3aa0-4fe2-973f-e6268135631d'
+    body = request.body
+    player_dict = json.loads(body)
 
-    secret = request.POST.get('Secret')
-    if secret != api_secret:
+    if player_dict['Secret'] != api_secret:
         return HttpResponse('Go awaaaaaaay...')
 
-    nhl_url = request.POST.get('NHL Url')
-    full_name = request.POST.get('Full name')
-    sweater = request.POST.get('Sweater')
-    position = request.POST.get('Position')
-    team = request.POST.get('Team')
-    birthdate = request.POST.get('Birthdate')
-    records_available = request.POST.get('Records available')
-    # print(full_name, records_available)
-
     try:
-        team_name = Team.objects.get(team_name=team)
+        team_name = Team.objects.get(team_name=player_dict['Team'])
     except Team.DoesNotExist:
-        team_name = Team.objects.create(team_name=team)
+        team_name = Team.objects.create(team_name=player_dict['Team'])
 
     try:
-        player = HockeyPlayer.objects.get(nhl_url=nhl_url)
+        player = HockeyPlayer.objects.get(nhl_url=player_dict['NHL Url'])
     except HockeyPlayer.DoesNotExist:
-        player = HockeyPlayer(nhl_url=nhl_url, full_name=full_name, sweater=sweater, position=position, birthdate=birthdate)
+        player = HockeyPlayer(nhl_url=player_dict['NHL Url'], full_name=player_dict['Full name'],
+                              sweater=player_dict['Sweater'], position=player_dict['Position'],
+                              birthdate=player_dict['Birthdate'])
         player.team = team_name
         player.save()
 
-    if str(records_available) == 'False':
+    if player_dict['Records available'] is False:
         return HttpResponse()
 
-    if position != 'Goalie':
+    if player_dict['Position'] != 'Goalie':
         # season = request.POST.get('Season')
-        GP = request.POST.get('GP')
-        G = request.POST.get('G')
-        A = request.POST.get('A')
-        P = request.POST.get('P')
-        PlusMinus = request.POST.get('PlusMinus')
-        PIM = request.POST.get('PIM')
-        PP = request.POST.get('PP')
-        SH = request.POST.get('SH')
-        GWG = request.POST.get('GWG')
-        S = request.POST.get('S')
-        Hits = request.POST.get('Hits')
-        BkS = request.POST.get('BkS')
-        GvA = request.POST.get('GvA')
-        TkA = request.POST.get('TkA')
-        TOIg = request.POST.get('TOIg')
-
-        player_scores = PlayerScores(GP=GP, G=G, A=A, P=P, PlusMinus=PlusMinus, PIM=PIM, PP=PP, SH=SH,
-                                     GWG=GWG, S=S, hits=Hits, BkS=BkS, GvA=GvA, TkA=TkA, TOIg=TOIg)
+        player_scores = PlayerScores(GP=player_dict['GP'], G=player_dict['G'], A=player_dict['A'], P=player_dict['P'],
+                                     PlusMinus=player_dict['PlusMinus'], PIM=player_dict['PIM'], PP=player_dict['PP'],
+                                     SH=player_dict['SH'], GWG=player_dict['GWG'], S=player_dict['S'],
+                                     hits=player_dict['Hits'], BkS=player_dict['BkS'], GvA=player_dict['GvA'],
+                                     TkA=player_dict['TkA'], TOIg=player_dict['TOIg'])
     else:
         # season = request.POST.get('Season')
-        GP = request.POST.get('GP')
-        GS = request.POST.get('GS')
-        W = request.POST.get('W')
-        L = request.POST.get('L')
-        OT = request.POST.get('OT')
-        GA = request.POST.get('GA')
-        SA = request.POST.get('SA')
-        Sv = request.POST.get('Sv')
-        SvPercentage = request.POST.get('SvPercentage')
-        GAA = request.POST.get('GAA')
-        SO = request.POST.get('SO')
-        Min = request.POST.get('Min')
-
-        player_scores = GoalieScores(GP=GP, GS=GS, W=W, L=L, OT=OT, GA=GA, SA=SA, Sv=Sv, SvPercentage=SvPercentage,
-                                     GAA=GAA, SO=SO, MIN=Min)
+        player_scores = GoalieScores(GP=player_dict['GP'], GS=player_dict['GS'], W=player_dict['W'], L=player_dict['L'],
+                                     OT=player_dict['OT'], GA=player_dict['GA'], SA=player_dict['SA'],
+                                     Sv=player_dict['Sv'], SvPercentage=player_dict['SvPercentage'],
+                                     GAA=player_dict['GAA'], SO=player_dict['SO'], MIN=player_dict['Min'])
     player_scores.player = player
     player_scores.save()
     return HttpResponse()
