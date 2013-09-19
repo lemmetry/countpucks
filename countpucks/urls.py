@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from countpucks.views import homepage, api, deleteEverything
+from countpucks.views import data_from_db, api, deleteEverything, homepage
 
 
 # Uncomment the next two lines to enable the admin:
@@ -8,9 +8,11 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^homepage/$', homepage, name='homepage'),
+    url(r'^db/$', data_from_db, name='data_from_db'),
     url(r'^api$', api, name='api'),
     url(r'^wipe/$', deleteEverything, name='deleteEverything'),
+
+    url(r'homepage/$', homepage, name='homepage'),
     # url(r'^$', 'countpucks.views.home', name='home'),
     # url(r'^countpucks/', include('countpucks.foo.urls')),
 
