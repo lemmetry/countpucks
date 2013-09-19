@@ -2,6 +2,7 @@ import urllib.request
 import urllib.error
 from bs4 import BeautifulSoup
 import requests
+import json
 
 
 service_address = 'http://127.0.0.1:8000/api'
@@ -15,7 +16,9 @@ class Client():
 
     def addPlayer(self, player_dict):
         player_dict['Secret'] = self.api_secret
-        requests.post(self.service_address, data=player_dict)
+        data = json.dumps(player_dict)
+        headers = {'content-type': 'application/json'}
+        requests.post(self.service_address, data=data, headers=headers)
 
 
 class ABCTask():
