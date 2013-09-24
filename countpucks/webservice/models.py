@@ -27,6 +27,7 @@ class HockeyPlayer(models.Model):
 class PlayerScores(models.Model):
     player = models.ForeignKey(HockeyPlayer)
     date = models.DateTimeField(auto_now_add=True, verbose_name='Date of the record')
+    Season = models.CharField(max_length=30, verbose_name='Season')
     GP = models.CharField(max_length=5, verbose_name='Games played')
     G = models.CharField(max_length=5, verbose_name='Goals')
     A = models.CharField(max_length=5, verbose_name='Assists')
@@ -45,15 +46,28 @@ class PlayerScores(models.Model):
 
     class Meta:
         verbose_name_plural = 'Player scores'
-        ordering = ('player',)
+        ordering = ('player__full_name',)
 
+    def get_fullname(self):
+        return self.player.full_name
+    get_fullname.admin_order_field = 'player__full_name'
+
+    def get_position(self):
+        return self.player.position
+    get_position.admin_order_field = 'player__position'
+
+    def get_team(self):
+        return self.player.team
+    get_team.admin_order_field = 'player__team'
+    
     def __unicode__(self):
         return '%s %s %s' % (self.player.full_name, self.player.sweater, self.player.team)
 
 
 class GoalieScores(models.Model):
     player = models.ForeignKey(HockeyPlayer)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True, verbose_name='Date of the record')
+    Season = models.CharField(max_length=30, verbose_name='Season')
     GP = models.CharField(max_length=5, verbose_name='Games played')
     GS = models.CharField(max_length=5, verbose_name='Games started')
     W = models.CharField(max_length=5, verbose_name='Wins')
@@ -69,3 +83,15 @@ class GoalieScores(models.Model):
 
     class Meta:
         verbose_name_plural = 'Goalie scores'
+        ordering = ('player__full_name',)
+
+    def get_fullname(self):
+        return self.player.full_name
+    get_fullname.admin_order_field = 'player__full_name'
+
+    def get_team(self):
+        return self.player.team
+    get_team.admin_order_field = 'player__team'
+    
+    def __unicode__(self):
+        return '%s %s %s' % (self.player.full_name, self.player.sweater, self.player.team)        
