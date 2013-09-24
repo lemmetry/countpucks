@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CountPucks.com</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+
+        {% load staticfiles %}
+        <link rel="stylesheet" href="{% static "countpucks/css/homepage.css" %}">
+    </head>
+
+    <body>
+        <div id="wrap">
+            <div class="container">
+                <div class="masthead">
+                    <h3 class="text-muted">CountPucks.com</h3>
+                    <ul class="nav nav-justified">
+                        <li class="active"><a href="#">Home</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+
+{#            page content #}
+            <div class="container" id="page-content">
+                <div class="row">
+
+                    <h3>Player of the day.</h3>
+                    {% if position != 'Goalie' %}
+                        {{ player.full_name }} {{ player.sweater }} from {{ player.team }}
+                        played {{ scores.GP }} game{{ scores.GP|pluralize }} in {{ scores.Season|lower }}.
+                        He  scored {{ scores.P }} point{{ scores.P|pluralize }} including
+                        {{ scores.G }} goal{{ scores.G|pluralize }} and {{ scores.A }} assist{{ scores.A|pluralize }}
+                        with "{{ scores.PlusMinus }}" in plus-minus rating.
+                    {% else %}
+                        {{ player.full_name }} {{ player.sweater }} from {{ player.team }}
+                        played {{ scores.GP }} game{{ scores.GP|pluralize }} in {{ scores.Season|lower }}.
+                        He recorded {{ scores.W }} win{{ scores.W|pluralize }} and {{ scores.L }} loss{{ scores.L|pluralize:"es" }},
+                        made {{ scores.Sv }} save{{ scores.Sv|pluralize }} with a save percentage of {{ scores.SvPercentage }}.
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Site footer -->
+        <div id="footer">
+            <div class="container">
+                <p class="text-muted credit">2013</p>
+            </div>
+        </div>
+
+    <script src="//code.jquery.com/jquery.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    </body>
+</html>

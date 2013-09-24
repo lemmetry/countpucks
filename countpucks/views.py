@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from countpucks.webservice.models import HockeyPlayer, Team, PlayerScores, GoalieScores
 import json
+import datetime
+from django.core.paginator import Paginator
 
 
 def data_from_db(request):
@@ -45,15 +47,13 @@ def api(request):
         return HttpResponse()
 
     if player_dict['Position'] != 'Goalie':
-        # season = request.POST.get('Season')
-        player_scores = PlayerScores(GP=player_dict['GP'], G=player_dict['G'], A=player_dict['A'], P=player_dict['P'],
+        player_scores = PlayerScores(Season=player_dict['Season'], GP=player_dict['GP'], G=player_dict['G'], A=player_dict['A'], P=player_dict['P'],
                                      PlusMinus=player_dict['PlusMinus'], PIM=player_dict['PIM'], PP=player_dict['PP'],
                                      SH=player_dict['SH'], GWG=player_dict['GWG'], S=player_dict['S'],
                                      hits=player_dict['Hits'], BkS=player_dict['BkS'], GvA=player_dict['GvA'],
                                      TkA=player_dict['TkA'], TOIg=player_dict['TOIg'])
     else:
-        # season = request.POST.get('Season')
-        player_scores = GoalieScores(GP=player_dict['GP'], GS=player_dict['GS'], W=player_dict['W'], L=player_dict['L'],
+        player_scores = GoalieScores(Season=player_dict['Season'], GP=player_dict['GP'], GS=player_dict['GS'], W=player_dict['W'], L=player_dict['L'],
                                      OT=player_dict['OT'], GA=player_dict['GA'], SA=player_dict['SA'],
                                      Sv=player_dict['Sv'], SvPercentage=player_dict['SvPercentage'],
                                      GAA=player_dict['GAA'], SO=player_dict['SO'], MIN=player_dict['Min'])
@@ -67,3 +67,37 @@ def deleteEverything(request):
     HockeyPlayer.objects.all().delete()
     Team.objects.all().delete()
     return HttpResponse()
+
+
+def playerOfTheDay(request):
+    
+    def applyFilters(players):
+        players_with_number = players.exclude(sweater='NO_NUMBER')
+        players_with_number_and_team = players_with_number.exclude(team__team_name='NO_TEAM')
+        return players_with_number_and_team    
+    
+    all_players = HockeyPlayer.objects.all()
+    selected_players = applyFilters(all_players)
+    
+    p = Paginator(selected_players, 1)
+    f = lambda i:(37 * i + 13) % p.num_pages
+
+    today = datetime.date.today()
+    today_int = int(today.strftime('%Y%m%d'))
+    
+    random_page_number = f(today_int)+1
+    random_page = p.page(random_page_number)
+    random_player = random_page.object_list[0]
+
+    position = random_player.position
+    if position != 'Goalie':
+        last_scores = random_player.playerscores_set.all()
+    else:
+        last_scores = random_player.goaliescores_set.all()
+    last_scores = last_scores[0]
+    
+    context = {'player': random_player,
+               'position': position,
+               'scores': last_scores}
+
+    return render(request, 'player_of_the_day.html', context)
