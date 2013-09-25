@@ -72,15 +72,19 @@ def deleteEverything(request):
 def playerOfTheDay(request):
     
     def applyFilters(players):
-        players_with_number = players.exclude(sweater='NO_NUMBER')
+        goalies_with_records = players.filter(position='Goalie').exclude(goaliescores__isnull=True)
+        players_with_records = players.exclude(position='Goalie').exclude(playerscores__isnull=True)
+        all_players_with_records = goalies_with_records | players_with_records
+
+        players_with_number = all_players_with_records.exclude(sweater='NO_NUMBER')
         players_with_number_and_team = players_with_number.exclude(team__team_name='NO_TEAM')
-        return players_with_number_and_team    
-    
+        return players_with_number_and_team
+
     all_players = HockeyPlayer.objects.all()
     selected_players = applyFilters(all_players)
     
     p = Paginator(selected_players, 1)
-    f = lambda i:(37 * i + 13) % p.num_pages
+    f = lambda i: (37 * i + 13) % p.num_pages
 
     today = datetime.date.today()
     today_int = int(today.strftime('%Y%m%d'))
