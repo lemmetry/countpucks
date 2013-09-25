@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <p>This site represents "from the ground up" learning experience with none or close to none prior knowledge in following:</p>
+        <ul>
+            {% for l in learning %}
+                <li>{{ l }}{% if not forloop.last %},{% endif %}</li>
+            {% endfor %}
+        </ul>
+        <p>Thanks to <a href="http://loki2302.me/" target="_blank">loki2302</a>, without whose mentorship none of this would be possible.</p>
+    </div>
+
+{% endblock %}
