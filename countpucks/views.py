@@ -7,15 +7,6 @@ import datetime
 from django.core.paginator import Paginator
 
 
-def data_from_db(request):
-    teams = Team.objects.all().exclude(team_name='NO_TEAM')
-    players = HockeyPlayer.objects.all()
-
-    context = {'teams': teams,
-               'players': players}
-    return render(request, 'base.html', context)
-
-
 def homepage(request):
     return render(request, 'homepage.html')
 
@@ -102,6 +93,14 @@ def playerOfTheDay(request):
     
     context = {'player': random_player,
                'position': position,
-               'scores': last_scores}
+               'scores': last_scores,
+               'active_class_id': 'playerOfTheDay'}
 
     return render(request, 'player_of_the_day.html', context)
+
+
+def about(request):
+    learning = ['Python', 'Django', 'Data Bases', 'Twitter Bootstrap', 'JSON', 'Web Services', 'and so forth...']
+    context = {'learning': learning,
+               'active_class_id': 'about'}
+    return render(request, 'about.html', context)
