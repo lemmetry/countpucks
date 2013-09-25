@@ -100,7 +100,7 @@ def playerOfTheDay(request):
 
 
 def about(request):
-    learning = ['Python', 'Django', 'Data Bases', 'Twitter Bootstrap', 'JSON', 'Web Services', 'and so forth...']
+    learning = ['Python', 'Git', 'Django', 'Data Bases', 'Twitter Bootstrap', 'JSON', 'Web Services', 'and so forth...']
     context = {'learning': learning,
                'active_class_id': 'about'}
     return render(request, 'about.html', context)
