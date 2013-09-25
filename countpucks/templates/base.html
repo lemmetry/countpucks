@@ -1,20 +1,41 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title></title>
-</head>
-<body>
-    <h2>Players:</h2>
-    {% for player in players %}
-        <br>{{ player.full_name }} - {{ player.sweater }} - {{ player.position }} -
-		{% for record in player.playerscores_set.all %}
-			{{ record.date }}
-		{% endfor %}
-    {% endfor %}
+    <head>
+        <title>CountPucks.com</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 
-    <h2>Teams:</h2>
-    {% for team in teams %}
-        <br>{{ team.team_name }}
-    {% endfor %}
-</body>
+        {% load staticfiles %}
+        <link rel="stylesheet" href="{% static "countpucks/css/homepage.css" %}">
+    </head>
+
+    <body>
+        <div id="wrap">
+            <div class="container">
+                <div class="masthead">
+                    <h3 class="text-muted">CountPucks.com</h3>
+                    <ul class="nav nav-justified">
+                        <li class="active"><a href="#">Home</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="container" id="page-content">
+                {% block content %}{% endblock %}
+            </div>
+
+        </div>
+
+        <!-- Site footer -->
+        <div id="footer">
+            <div class="container">
+                <p class="text-muted credit">2013</p>
+            </div>
+        </div>
+
+    <script src="//code.jquery.com/jquery.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    </body>
 </html>
