@@ -1,14 +1,17 @@
 # Django settings for countpucks project.
 import os
-
+import socket
 
 CURRENT_DIR = os.path.dirname(__file__)
 
-DEBUG = True
+if socket.gethostname() == 'vm-VirtualBox':
+    DEBUG = True
+else:
+    DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Artem Kisel', 'artemkisel@yahoo.com'),
 )
 
 MANAGERS = ADMINS
