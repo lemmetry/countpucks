@@ -1,5 +1,3 @@
-import urllib.request
-import urllib.error
 from bs4 import BeautifulSoup
 import requests
 import json
@@ -26,8 +24,9 @@ class ABCTask():
         self.url = url
 
     def processTask(self, context):
-        link = urllib.request.urlopen(self.url)
-        soup = BeautifulSoup(link.read())
+        response = requests.get(self.url)
+        soup = BeautifulSoup(response.text)
+        
         lastInitials = soup.find('div', {'class': 'lastInitial'})
 
         tasks = [LetterTask('http://www.nhl.com' + link.get('href') + '&pg=1')
@@ -41,9 +40,9 @@ class LetterTask():
 
     def processTask(self, context):
         players_urls = []
-
-        link = urllib.request.urlopen(self.url)
-        soup = BeautifulSoup(link.read())
+        
+        response = requests.get(self.url)
+        soup = BeautifulSoup(response.text)
 
         no_players_on_letter_url = soup.find('div', {'style': 'padding: 6px; font-weight: bold;'}) is not None
         if no_players_on_letter_url:
@@ -132,13 +131,9 @@ class PlayerTask():
 
     def processTask(self, context):
         nhl_url = self.url
-        try:
-            link = urllib.request.urlopen(self.url).read()
-        except urllib.error.HTTPError as err:
-            # print('ERROR HERE:', self.url)
-            return
 
-        soup = BeautifulSoup(link)
+        response = requests.get(self.url)
+        soup = BeautifulSoup(response.text)
 
         full_name = self.getFullName(soup)
         sweater = self.getSweater(soup)
@@ -161,12 +156,10 @@ class PlayerTask():
         player_has_stat_page = 'view=splits' in node
         if player_has_stat_page:
             url = self.url + '&view=splits'
-            try:
-                link = urllib.request.urlopen(url).read()
-            except urllib.error.HTTPError as err:
-                return
 
-            soup = BeautifulSoup(link)
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text)
+
             node = soup.find('tr', {'class': 'statsRowStyle'})
 
             stat_values = [True, nhl_url, full_name, sweater, team, position, birthdate]
