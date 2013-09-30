@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     # url(r'^wipe/$', deleteEverything, name='deleteEverything'),
 
     url(r'^$', playerOfTheDay, name='playerOfTheDay'),
-    url(r'about/$', about, name='about'),
+    url(r'^about/$', about, name='about'),
     # url(r'^$', 'countpucks.views.home', name='home'),
     # url(r'^countpucks/', include('countpucks.foo.urls')),
 
