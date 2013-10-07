@@ -1,9 +1,13 @@
 from bs4 import BeautifulSoup
 import requests
 import json
+import socket
 
 
-service_address = 'http://127.0.0.1:8000/api'
+if socket.gethostname() == 'vm-VirtualBox':
+    service_address = 'http://127.0.0.1:8000/api/'
+else:
+    service_address = 'http://www.countpucks.com/api'
 api_secret = '5e30d905-3aa0-4fe2-973f-e6268135631d'
 
 
@@ -146,7 +150,7 @@ class PlayerTask():
 
         birthdate = self.getBirthdate(soup)
 
-        print('%s - %s - %s - %s - %s' % (full_name, sweater, team, position, birthdate))
+        print('%s - %s, %s' % (full_name, sweater, team))
 
         node = soup.find('ul', {'class': 'ui-tabs-nav'})
         node = str(node)
