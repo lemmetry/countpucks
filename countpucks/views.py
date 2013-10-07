@@ -13,7 +13,7 @@ def homepage(request):
 
 @csrf_exempt
 def api(request):
-    api_secret = '5e30d905-3aa0-4fe2-973f-e6268135631d'
+    api_secret = '947e72de-b090-4979-83a8-fad44b4be3f5'
     player_dict = json.loads(request.body.decode(encoding='UTF-8'))
 
     if player_dict['Secret'] != api_secret:

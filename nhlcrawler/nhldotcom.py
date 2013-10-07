@@ -8,7 +8,7 @@ if socket.gethostname() == 'vm-VirtualBox':
     service_address = 'http://127.0.0.1:8000/api/'
 else:
     service_address = 'http://www.countpucks.com/api'
-api_secret = '5e30d905-3aa0-4fe2-973f-e6268135631d'
+api_secret = '947e72de-b090-4979-83a8-fad44b4be3f5'
 
 
 class Client():
