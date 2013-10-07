@@ -8,7 +8,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Examples:
-    url(r'^api$', api, name='api'),
+    url(r'^api$/', api, name='api'),
     # url(r'^wipe/$', deleteEverything, name='deleteEverything'),
 
     url(r'^$', playerOfTheDay, name='playerOfTheDay'),
