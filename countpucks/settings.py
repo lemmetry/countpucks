@@ -30,7 +30,7 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.countpucks.com']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -91,7 +91,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'j79+8lu4^zb4-k1b(tm8krq82x(3=e)#!(i)y=i8fht$6s2-4d'
+SECRET_KEY = 'wv()8kvr%58vtyp-ku#+)wd(+@#809gw^*9y5r8lihsq2ff0=c'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
