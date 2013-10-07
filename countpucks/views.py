@@ -14,8 +14,7 @@ def homepage(request):
 @csrf_exempt
 def api(request):
     api_secret = '5e30d905-3aa0-4fe2-973f-e6268135631d'
-    body = request.body
-    player_dict = json.loads(body)
+    player_dict = json.loads(request.body.decode(encoding='UTF-8'))
 
     if player_dict['Secret'] != api_secret:
         return HttpResponse('Go awaaaaaaay...')
