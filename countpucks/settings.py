@@ -19,7 +19,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(CURRENT_DIR, 'nhl.db'),                      # Or path to database file if using sqlite3.
+        'NAME': os.path.join(CURRENT_DIR, 'nhl.db').replace('\\', '/'),                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -91,7 +91,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'wv()8kvr%58vtyp-ku#+)wd(+@#809gw^*9y5r8lihsq2ff0=c'
+SECRET_KEY = 'j79+8lu4^zb4-k1b(tm8krq82x(3=e)#!(i)y=i8fht$6s2-4d'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
