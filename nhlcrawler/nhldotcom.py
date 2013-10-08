@@ -7,7 +7,7 @@ import socket
 if socket.gethostname() == 'vm-VirtualBox':
     service_address = 'http://127.0.0.1:8000/api/'
 else:
-    service_address = 'http://www.countpucks.com/api'
+    service_address = 'http://www.countpucks.com/api/'
 api_secret = '947e72de-b090-4979-83a8-fad44b4be3f5'
 
 
@@ -30,7 +30,7 @@ class ABCTask():
     def processTask(self, context):
         response = requests.get(self.url)
         soup = BeautifulSoup(response.text)
-        
+
         lastInitials = soup.find('div', {'class': 'lastInitial'})
 
         tasks = [LetterTask('http://www.nhl.com' + link.get('href') + '&pg=1')
@@ -44,7 +44,7 @@ class LetterTask():
 
     def processTask(self, context):
         players_urls = []
-        
+
         response = requests.get(self.url)
         soup = BeautifulSoup(response.text)
 
