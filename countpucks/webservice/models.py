@@ -15,7 +15,7 @@ class Team(models.Model):
 class HockeyPlayer(models.Model):
     nhl_url = models.URLField(verbose_name='NHL Url', max_length=100)
     full_name = models.CharField(max_length=100)
-    sweater = models.CharField(max_length=3, blank=True)
+    sweater = models.CharField(max_length=10, blank=True)
     position = models.CharField(max_length=50)
     team = models.ForeignKey(Team)
     birthdate = models.CharField(max_length=30)
@@ -94,4 +94,4 @@ class GoalieScores(models.Model):
     get_team.admin_order_field = 'player__team'
     
     def __unicode__(self):
-        return '%s %s %s' % (self.player.full_name, self.player.sweater, self.player.team)        
+        return '%s %s %s' % (self.player.full_name, self.player.sweater, self.player.team)
