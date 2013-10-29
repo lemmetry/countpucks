@@ -6,8 +6,8 @@ html,
 body
 {
 	height: 100%;
-    background-color: lightblue;
 }
+
 ul
 {
     list-style-type: none;
@@ -62,6 +62,7 @@ div ul li span
     border-bottom: 0;
     border-radius: 0 0 5px 5px;
 }
+
 @media (min-width: 768px)
 {
     .nav-justified
@@ -107,7 +108,7 @@ div ul li span
     height: 40px;
 }
 
-#hover-div:hover
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th
 {
-    background: #ffffff;
+  background-color: #e5e5e5;
 }
