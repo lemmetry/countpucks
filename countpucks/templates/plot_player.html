@@ -49,49 +49,38 @@
                 </table>		
             </div>
         </div>
-
-
     </div>
 
 <script type="text/javascript">
 $(function ()
 {
-    var goals_data = [];
-    var assists_data = [];
-    var points_data = [];
-    var plus_minus_data = [];
-    {% for record in records %}
-        goals_data.push([{{ record.GP }}, {{ record.G }}]);
-        assists_data.push([{{ record.GP }}, {{ record.A }}]);
-        points_data.push([{{ record.GP }}, {{ record.P }}]);
-        plus_minus_data.push([{{ record.GP }}, {{ record.PlusMinus }}]);
-    {% endfor %}
+    var data_dump = {{ data_dump|safe }};
 
     var datasets = {
             'goals': {
                 label: 'Goals',
-                data: goals_data,
+                data: data_dump['goals_data'],
                 lines: { show: true },
                 color: '#ff0000',
                 points: { show: true, radius: 3}
             },
             'assists': {
                 label: 'Assists',
-                data: assists_data,
+                data: data_dump['assists_data'],
                 lines: { show: true },
                 color: '#8181F7',
                 points: { show: true, radius: 3}
             },
             'points': {
                 label: 'Points',
-                data: points_data,
+                data: data_dump['points_data'],
                 lines: { show: true },
                 color: '#ffd700',
                 points: { show: true, radius: 3}
             },
             'plus_munis': {
                 label: '+/-',
-                data: plus_minus_data,
+                data: data_dump['plus_minus_data'],
                 color: '#00008b',
                 lines: { show: true },
                 points: { show: true, radius: 3}

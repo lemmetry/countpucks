@@ -49,50 +49,38 @@
                 </table>		
             </div>
         </div>
-	{% for r in records %}
-		{{ r.date }} - {{ r.Season }} - {{ r.GP }}<br>
-	{% endfor %}
     </div>
 
 <script type="text/javascript">
 $(function ()
 {
-    var goals_against_data = [];
-    var saves_data = [];
-    var save_percentage_data = [];
-    var goals_against_average_data = [];
-    {% for record in records %}
-        goals_against_data.push([{{ record.GP }}, {{ record.GA }}]);
-        saves_data.push([{{ record.GP }}, {{ record.Sv }}]);
-        save_percentage_data.push([{{ record.GP }}, {{ record.SvPercentage }}]);
-        goals_against_average_data.push([{{ record.GP }}, {{ record.GAA }}]);
-    {% endfor %}
+    var data_dump = {{ data_dump|safe }};
 
     var datasets = {
             goals_against: {
                 label: 'Goals against',
-                data: goals_against_data,
+                data: data_dump['goals_against_data'],
                 lines: { show: true },
                 color: '#ff0000',
                 points: { show: true, radius: 3}
             },
             'saves': {
                 label: 'Saves',
-                data: saves_data,
+                data: data_dump['saves_data'],
                 lines: { show: true },
                 color: '#8181F7',
                 points: { show: true, radius: 3}
             },
             'save_percentage': {
                 label: 'Save percentage',
-                data: save_percentage_data,
+                data: data_dump['save_percentage_data'],
                 lines: { show: true },
                 color: '#ffd700',
                 points: { show: true, radius: 3}
             },
             'goals_against_average': {
                 label: 'Goals against average',
-                data: goals_against_average_data,
+                data: data_dump['goals_against_average_data'],
                 color: '#00008b',
                 lines: { show: true },
                 points: { show: true, radius: 3}

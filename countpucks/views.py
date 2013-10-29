@@ -33,15 +33,16 @@ def api(request):
         return HttpResponse()
 
     if player_dict['Position'] != 'Goalie':
-        player_scores = PlayerScores(Season=player_dict['Season'], GP=player_dict['GP'], G=player_dict['G'], A=player_dict['A'], P=player_dict['P'],
-                                     PlusMinus=player_dict['PlusMinus'], PIM=player_dict['PIM'], PP=player_dict['PP'],
-                                     SH=player_dict['SH'], GWG=player_dict['GWG'], S=player_dict['S'],
-                                     hits=player_dict['Hits'], BkS=player_dict['BkS'], GvA=player_dict['GvA'],
-                                     TkA=player_dict['TkA'], TOIg=player_dict['TOIg'])
+        player_scores = PlayerScores(Season=player_dict['Season'], GP=player_dict['GP'], G=player_dict['G'],
+                                     A=player_dict['A'], P=player_dict['P'], PlusMinus=player_dict['PlusMinus'],
+                                     PIM=player_dict['PIM'], PP=player_dict['PP'], SH=player_dict['SH'],
+                                     GWG=player_dict['GWG'], S=player_dict['S'], hits=player_dict['Hits'],
+                                     BkS=player_dict['BkS'], GvA=player_dict['GvA'], TkA=player_dict['TkA'],
+                                     TOIg=player_dict['TOIg'])
     else:
-        player_scores = GoalieScores(Season=player_dict['Season'], GP=player_dict['GP'], GS=player_dict['GS'], W=player_dict['W'], L=player_dict['L'],
-                                     OT=player_dict['OT'], GA=player_dict['GA'], SA=player_dict['SA'],
-                                     Sv=player_dict['Sv'], SvPercentage=player_dict['SvPercentage'],
+        player_scores = GoalieScores(Season=player_dict['Season'], GP=player_dict['GP'], GS=player_dict['GS'],
+                                     W=player_dict['W'], L=player_dict['L'], OT=player_dict['OT'], GA=player_dict['GA'],
+                                     SA=player_dict['SA'], Sv=player_dict['Sv'], SvPercentage=player_dict['SvPercentage'],
                                      GAA=player_dict['GAA'], SO=player_dict['SO'], MIN=player_dict['Min'])
     player_scores.player = player
     player_scores.save()
@@ -83,33 +84,53 @@ def playerOfTheDay(request):
     if position != 'Goalie':
         player_records = PlayerScores.objects.filter(player=random_player).filter(Season='2013-2014 REGULAR SEASON')
         record_count = len(player_records)
-        current_GP = player_records[record_count-1].GP
-        current_G = player_records[record_count-1].G
-        current_A = player_records[record_count-1].A
-
         current_record = player_records[record_count-1]
+
+        goals_data = []
+        assists_data = []
+        points_data = []
+        plus_minus_data = []
+        for record in player_records:
+            goals_data.append([record.GP, record.G])
+            assists_data.append([record.GP, record.A])
+            points_data.append([record.GP, record.P])
+            plus_minus_data.append([record.GP, record.PlusMinus])
+
+        data_dict = {'goals_data': goals_data,
+                     'assists_data': assists_data,
+                     'points_data': points_data,
+                     'plus_minus_data': plus_minus_data}
+        data_dump = json.dumps(data_dict)
+
         context = {'player': random_player,
-                   'records': player_records,
                    'current_record': current_record,
-                   'current_GP': current_GP,
-                   'current_G': current_G,
-                   'current_A': current_A,
+                   'data_dump': data_dump,
                    'active_class_id': 'playerOfTheDay'}
         return render(request, 'plot_player.html', context)
     else:
         player_records = GoalieScores.objects.filter(player=random_player).filter(Season='2013-2014 REGULAR SEASON')
         record_count = len(player_records)
-        current_GP = player_records[record_count-1].GP
-        current_SvP = player_records[record_count-1].SvPercentage
-        current_GAA = player_records[record_count-1].GAA
-
         current_record = player_records[record_count-1]
+
+        goals_against_data = []
+        saves_data = []
+        save_percentage_data = []
+        goals_against_average_data = []
+        for record in player_records:
+            goals_against_data.append([record.GP, record.GA])
+            saves_data.append([record.GP, record.Sv])
+            save_percentage_data.append([record.GP, record.SvPercentage])
+            goals_against_average_data.append([record.GP, record.GAA])
+
+        data_dict = {'goals_against_data': goals_against_data,
+                     'saves_data': saves_data,
+                     'save_percentage_data': save_percentage_data,
+                     'goals_against_average_data': goals_against_average_data}
+        data_dump = json.dumps(data_dict)
+
         context = {'player': random_player,
-                   'records': player_records,
                    'current_record': current_record,
-                   'current_GP': current_GP,
-                   'current_SvP': current_SvP,
-                   'current_GAA': current_GAA,
+                   'data_dump': data_dump,
                    'active_class_id': 'playerOfTheDay'}
         return render(request, 'plot_goalie.html', context)
 
