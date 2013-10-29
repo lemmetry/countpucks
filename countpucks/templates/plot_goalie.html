@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8" id="placeholder" style="max-width:7680px;height:300px;"></div>
+            <div class="col-md-4">
+                <table class="table table-hover" id="choices">
+                    <thead>
+                        <tr>
+                            <td><b>{{ player.full_name }}</b><br>{{ player.position }}</td>
+                            <td style="text-align: right">{{ player.team }}<br>{{ player.position }}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="goals_against" checked="checked" id="idgoals_against"> Goals against:
+                                </label>
+                            </td>
+                            <td  style="text-align: right">{{ current_record.GA }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="saves" checked="checked" id="idsaves"> Saves:
+                                </label>
+                            </td>
+                            <td  style="text-align: right">{{ current_record.Sv }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="save_percentage" checked="checked" id="idsave_percentage"> Save percentage:
+                                </label>
+                            </td>
+                            <td  style="text-align: right">{{ current_record.SvPercentage }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="goals_against_average" checked="checked" id="idgoals_against_average"> Goals against average:
+                                </label>
+                            </td>
+                            <td  style="text-align: right">{{ current_record.GAA }}</td>
+                        </tr>
+                    </tbody>
+                </table>		
+            </div>
+        </div>
+	{% for r in records %}
+		{{ r.date }} - {{ r.Season }} - {{ r.GP }}<br>
+	{% endfor %}
+    </div>
+
+<script type="text/javascript">
+$(function ()
+{
+    var goals_against_data = [];
+    var saves_data = [];
+    var save_percentage_data = [];
+    var goals_against_average_data = [];
+    {% for record in records %}
+        goals_against_data.push([{{ record.GP }}, {{ record.GA }}]);
+        saves_data.push([{{ record.GP }}, {{ record.Sv }}]);
+        save_percentage_data.push([{{ record.GP }}, {{ record.SvPercentage }}]);
+        goals_against_average_data.push([{{ record.GP }}, {{ record.GAA }}]);
+    {% endfor %}
+
+    var datasets = {
+            goals_against: {
+                label: 'Goals against',
+                data: goals_against_data,
+                lines: { show: true },
+                color: '#ff0000',
+                points: { show: true, radius: 3}
+            },
+            'saves': {
+                label: 'Saves',
+                data: saves_data,
+                lines: { show: true },
+                color: '#8181F7',
+                points: { show: true, radius: 3}
+            },
+            'save_percentage': {
+                label: 'Save percentage',
+                data: save_percentage_data,
+                lines: { show: true },
+                color: '#ffd700',
+                points: { show: true, radius: 3}
+            },
+            'goals_against_average': {
+                label: 'Goals against average',
+                data: goals_against_average_data,
+                color: '#00008b',
+                lines: { show: true },
+                points: { show: true, radius: 3}
+            }
+        };
+
+    var choiceContainer = $("#choices");
+    choiceContainer.find("input").click(plotAccordingToChoices);
+
+    function plotAccordingToChoices() {
+        var data = [];
+
+        choiceContainer.find("input:checked").each(function () {
+            var key = $(this).attr("name");
+            if (key && datasets[key])
+                data.push(datasets[key]);
+        });
+
+        if (data.length > 0)
+            $.plot($("#placeholder"), data, {
+                yaxis: { tickDecimals: 0 },
+                xaxis: { min: 1, tickDecimals: 0 },
+                legend: { position: 'nw', backgroundOpacity: 0.5 }
+            });
+    }
+
+    plotAccordingToChoices();
+});
+</script>
+
+{% endblock %}

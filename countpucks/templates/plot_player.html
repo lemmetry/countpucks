@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8" id="placeholder" style="max-width:7680px;height:300px;"></div>
+            <div class="col-md-4">
+                <table class="table table-hover" id="choices">
+                    <thead>
+                        <tr>
+                            <td><b>{{ player.full_name }}</b><br>{{ player.sweater }}</td>
+                            <td style="text-align: right">{{ player.team }}<br>{{ player.position }}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="goals" checked="checked" id="idgoals"> Goals:
+                                </label>
+                            </td>
+                            <td  style="text-align: right">{{ current_record.G }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="assists" checked="checked" id="idassists"> Assists:
+                                </label>
+                            </td>
+                            <td  style="text-align: right">{{ current_record.A }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="points" checked="checked" id="idpoints"> Points:
+                                </label>
+                            </td>
+                            <td  style="text-align: right">{{ current_record.P }}</td>
+                        </tr>
+                        <tr>
+                            <td id="pm"> 
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="plus_munis" checked="checked" id="idplus_munis"> +/-:
+                                </label>
+                            </td>
+                            <td  style="text-align: right">{{ current_record.PlusMinus }}</td>
+                        </tr>
+                    </tbody>
+                </table>		
+            </div>
+        </div>
+
+
+    </div>
+
+<script type="text/javascript">
+$(function ()
+{
+    var goals_data = [];
+    var assists_data = [];
+    var points_data = [];
+    var plus_minus_data = [];
+    {% for record in records %}
+        goals_data.push([{{ record.GP }}, {{ record.G }}]);
+        assists_data.push([{{ record.GP }}, {{ record.A }}]);
+        points_data.push([{{ record.GP }}, {{ record.P }}]);
+        plus_minus_data.push([{{ record.GP }}, {{ record.PlusMinus }}]);
+    {% endfor %}
+
+    var datasets = {
+            'goals': {
+                label: 'Goals',
+                data: goals_data,
+                lines: { show: true },
+                color: '#ff0000',
+                points: { show: true, radius: 3}
+            },
+            'assists': {
+                label: 'Assists',
+                data: assists_data,
+                lines: { show: true },
+                color: '#8181F7',
+                points: { show: true, radius: 3}
+            },
+            'points': {
+                label: 'Points',
+                data: points_data,
+                lines: { show: true },
+                color: '#ffd700',
+                points: { show: true, radius: 3}
+            },
+            'plus_munis': {
+                label: '+/-',
+                data: plus_minus_data,
+                color: '#00008b',
+                lines: { show: true },
+                points: { show: true, radius: 3}
+            }
+        };
+
+    var choiceContainer = $("#choices");
+    choiceContainer.find("input").click(plotAccordingToChoices);
+
+    function plotAccordingToChoices() {
+        var data = [];
+
+        choiceContainer.find("input:checked").each(function () {
+            var key = $(this).attr("name");
+            if (key && datasets[key])
+                data.push(datasets[key]);
+        });
+
+        if (data.length > 0)
+            $.plot($("#placeholder"), data, {
+                yaxis: { tickDecimals: 0 },
+                xaxis: { min: 1, tickDecimals: 0 },
+                legend: { position: 'nw', backgroundOpacity: 0.5 }
+            });
+    }
+
+    plotAccordingToChoices();
+});
+</script>
+
+{% endblock %}

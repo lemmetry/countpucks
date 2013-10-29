@@ -7,10 +7,6 @@ import datetime
 from django.core.paginator import Paginator
 
 
-def homepage(request):
-    return render(request, 'homepage.html')
-
-
 @csrf_exempt
 def api(request):
     api_secret = '947e72de-b090-4979-83a8-fad44b4be3f5'
@@ -62,8 +58,8 @@ def deleteEverything(request):
 def playerOfTheDay(request):
     
     def applyFilters(players):
-        goalies_with_records = players.filter(position='Goalie').exclude(goaliescores__isnull=True)
-        players_with_records = players.exclude(position='Goalie').exclude(playerscores__isnull=True)
+        goalies_with_records = players.filter(position='Goalie').exclude(goaliescores__isnull=True).filter(goaliescores__Season='2013-2014 REGULAR SEASON')
+        players_with_records = players.exclude(position='Goalie').exclude(playerscores__isnull=True).filter(playerscores__Season='2013-2014 REGULAR SEASON')
         all_players_with_records = goalies_with_records | players_with_records
 
         players_with_number = all_players_with_records.exclude(sweater='NO_NUMBER')
@@ -72,30 +68,48 @@ def playerOfTheDay(request):
 
     all_players = HockeyPlayer.objects.all()
     selected_players = applyFilters(all_players)
-    
+
     p = Paginator(selected_players, 1)
     f = lambda i: (37 * i + 13) % p.num_pages
 
     today = datetime.date.today()
     today_int = int(today.strftime('%Y%m%d'))
-    
+
     random_page_number = f(today_int)+1
     random_page = p.page(random_page_number)
     random_player = random_page.object_list[0]
 
     position = random_player.position
     if position != 'Goalie':
-        last_scores = random_player.playerscores_set.all()
-    else:
-        last_scores = random_player.goaliescores_set.all()
-    last_scores = last_scores[0]
-    
-    context = {'player': random_player,
-               'position': position,
-               'scores': last_scores,
-               'active_class_id': 'playerOfTheDay'}
+        player_records = PlayerScores.objects.filter(player=random_player).filter(Season='2013-2014 REGULAR SEASON')
+        record_count = len(player_records)
+        current_GP = player_records[record_count-1].GP
+        current_G = player_records[record_count-1].G
+        current_A = player_records[record_count-1].A
 
-    return render(request, 'player_of_the_day.html', context)
+        current_record = player_records[record_count-1]
+        context = {'player': random_player,
+                   'records': player_records,
+                   'current_record': current_record,
+                   'current_GP': current_GP,
+                   'current_G': current_G,
+                   'current_A': current_A}
+        return render(request, 'plot_player.html', context)
+    else:
+        player_records = GoalieScores.objects.filter(player=random_player).filter(Season='2013-2014 REGULAR SEASON')
+        record_count = len(player_records)
+        current_GP = player_records[record_count-1].GP
+        current_SvP = player_records[record_count-1].SvPercentage
+        current_GAA = player_records[record_count-1].GAA
+
+        current_record = player_records[record_count-1]
+        context = {'player': random_player,
+                   'records': player_records,
+                   'current_record': current_record,
+                   'current_GP': current_GP,
+                   'current_SvP': current_SvP,
+                   'current_GAA': current_GAA}
+        return render(request, 'plot_goalie.html', context)
 
 
 def about(request):
