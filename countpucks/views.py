@@ -100,13 +100,7 @@ def playerOfTheDay(request):
                      'assists_data': assists_data,
                      'points_data': points_data,
                      'plus_minus_data': plus_minus_data}
-        data_dump = json.dumps(data_dict)
-
-        context = {'player': random_player,
-                   'current_record': current_record,
-                   'data_dump': data_dump,
-                   'active_class_id': 'playerOfTheDay'}
-        return render(request, 'plot_player.html', context)
+        template_name = 'plot_player.html'
     else:
         player_records = GoalieScores.objects.filter(player=random_player).filter(Season='2013-2014 REGULAR SEASON')
         record_count = len(player_records)
@@ -126,13 +120,14 @@ def playerOfTheDay(request):
                      'saves_data': saves_data,
                      'save_percentage_data': save_percentage_data,
                      'goals_against_average_data': goals_against_average_data}
-        data_dump = json.dumps(data_dict)
+        template_name = 'plot_goalie.html'
 
-        context = {'player': random_player,
-                   'current_record': current_record,
-                   'data_dump': data_dump,
-                   'active_class_id': 'playerOfTheDay'}
-        return render(request, 'plot_goalie.html', context)
+    data_dump = json.dumps(data_dict)
+    context = {'player': random_player,
+               'current_record': current_record,
+               'data_dump': data_dump,
+               'active_class_id': 'playerOfTheDay'}
+    return render(request, template_name, context)
 
 
 def about(request):
