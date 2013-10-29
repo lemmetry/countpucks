@@ -93,7 +93,8 @@ def playerOfTheDay(request):
                    'current_record': current_record,
                    'current_GP': current_GP,
                    'current_G': current_G,
-                   'current_A': current_A}
+                   'current_A': current_A,
+                   'active_class_id': 'playerOfTheDay'}
         return render(request, 'plot_player.html', context)
     else:
         player_records = GoalieScores.objects.filter(player=random_player).filter(Season='2013-2014 REGULAR SEASON')
@@ -108,7 +109,8 @@ def playerOfTheDay(request):
                    'current_record': current_record,
                    'current_GP': current_GP,
                    'current_SvP': current_SvP,
-                   'current_GAA': current_GAA}
+                   'current_GAA': current_GAA,
+                   'active_class_id': 'playerOfTheDay'}
         return render(request, 'plot_goalie.html', context)
 
 
