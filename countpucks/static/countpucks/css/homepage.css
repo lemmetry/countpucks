@@ -1,4 +1,5 @@
-* {
+*
+{
     padding: 0;
     margin: 0;
 }
@@ -92,20 +93,24 @@ div ul li span
     margin-left: auto;
     margin-right: auto;
     padding-top: 20px;
+    overflow: auto;
+    padding-bottom: 40px;
 }
 
  /*Wrapper for page content to push down footer */
 #wrap
 {
 	min-height: 100%;
-	margin: 0 auto -60px;
-	padding: 0 0 60px;
 }
 
 #footer
 {
     text-align: right;
     height: 40px;
+    margin-top: -40px; /* negative value of footer height */
+    padding-top: 20px;
+    position: relative;
+    clear: both;
 }
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th
