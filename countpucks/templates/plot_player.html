@@ -2,6 +2,11 @@
 
 {% block content %}
     <div class="container">
+        {% if header %}
+            <div class="row">
+                <div class="col-md-12"><h4>{{ header }}</h4></div>
+            </div>
+        {% endif %}
         <div class="row">
             <div class="col-md-8" id="placeholder" style="max-width:7680px;height:300px;"></div>
             <div class="col-md-4">
@@ -38,7 +43,7 @@
                             <td  style="text-align: right">{{ current_record.P }}</td>
                         </tr>
                         <tr>
-                            <td id="pm"> 
+                            <td>
                                 <label class="checkbox-inline">
                                     <input type="checkbox" name="plus_munis" checked="checked" id="idplus_munis"> +/-:
                                 </label>
@@ -46,7 +51,7 @@
                             <td  style="text-align: right">{{ current_record.PlusMinus }}</td>
                         </tr>
                     </tbody>
-                </table>		
+                </table>
             </div>
         </div>
     </div>
