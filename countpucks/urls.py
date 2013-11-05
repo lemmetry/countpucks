@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from countpucks.views import api, deleteEverything, playerOfTheDay, about
+from countpucks.views import api, deleteEverything, playerOfTheDay, about, searchPlayer, plotAnyPlayer
 
 
 # Uncomment the next two lines to enable the admin:
@@ -11,8 +11,12 @@ urlpatterns = patterns('',
     url(r'^api/$', api, name='api'),
     # url(r'^wipe/$', deleteEverything, name='deleteEverything'),
 
-    url(r'^$', playerOfTheDay, name='playerOfTheDay'),
+    url(r'^$', playerOfTheDay, name='player_of_the_day'),
     url(r'^about/$', about, name='about'),
+    url(r'^players/$', searchPlayer, name='search_player'),
+
+    url(r'^players/(?P<pk>\d+)/$', plotAnyPlayer, name='plot_any_player'),
+
     # url(r'^$', 'countpucks.views.home', name='home'),
     # url(r'^countpucks/', include('countpucks.foo.urls')),
 
