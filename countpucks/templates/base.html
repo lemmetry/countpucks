@@ -18,7 +18,8 @@
                 <div class="masthead">
                     <h3 class="text-muted">CountPucks.com</h3>
                     <ul class="nav nav-justified">
-                        <li {% ifequal active_class_id "playerOfTheDay" %}class="active"{% endifequal %}><a href="{% url 'playerOfTheDay' %}">Home</a></li>
+                        <li {% ifequal active_class_id "player_of_the_day" %}class="active"{% endifequal %}><a href="{% url 'player_of_the_day' %}">Home</a></li>
+                        <li {% ifequal active_class_id "search_player" %}class="active"{% endifequal %}><a href="{% url 'search_player' %}">Players</a></li>
                         <li {% ifequal active_class_id "about" %}class="active"{% endifequal %}><a href="{% url 'about' %}">About</a></li>
                     </ul>
                 </div>
@@ -27,7 +28,6 @@
             <div class="container" id="page-content">
                 {% block content %}{% endblock %}
             </div>
-
         </div>
 
         <!-- Site footer -->
