@@ -102,6 +102,9 @@ def about(request):
 def searchPlayer(request):
 
     errors = []
+    context = {'errors': errors,
+               'active_class_id': 'search_player'}
+
     if 'q' in request.GET:
         search_name = request.GET['q']
         if not search_name:
@@ -113,20 +116,14 @@ def searchPlayer(request):
 
             if not found_players:
                 errors.append('No players found.')
-                context = {'errors': errors,
-                           'active_class_id': 'search_player'}
                 return render(request, 'search_player.html', context)
 
             found_players = found_players.exclude(team__team_name='NO_TEAM').exclude(position='NO_POSITION')
             # TODO: deside on - eliminate from search results OR somehow mark players without any data to plot.
-
-            context = {'players': found_players,
-                       'query': search_name,
-                       'active_class_id': 'search_player'}
+            context['players'] = found_players
+            context['query'] = search_name
             return render(request, 'search_player.html', context)
 
-    context = {'errors': errors,
-               'active_class_id': 'search_player'}
     return render(request, 'search_player.html', context)
 
 
